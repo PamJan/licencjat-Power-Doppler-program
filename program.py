@@ -93,7 +93,6 @@ def mergeNoisySplices():
         if(noisySlices[i] == 1):
             howManyWrong = howManyWrong+1
             if(noisySlices[i+1] == 0 or i+1 == len(noisySlices)):
-                print(i, '/', len(noisySlices))
                 i += 1
                 before = np.array(ds.pixel_array[i-howManyWrong-1])
                 after = np.array(ds.pixel_array[i])
@@ -125,10 +124,6 @@ def createNewDICM(outputFile = str(datetime.now().strftime("%Y-%m-%d %H-%M-%S"))
 
 ###########################################################################################
 
-
-
-
-
 if(__name__ == "__main__"):
     inputFile = sys.argv[1]
     ds = dcmread(inputFile)
@@ -136,10 +131,19 @@ if(__name__ == "__main__"):
     createCollorValueDic()
     findGreenBoxCoordinates()
     createSlicesValue()
-    testNoise()
-    mergeNoisySplices()
-    if(len(sys.argv) == 2):
+
+    if(len(sys.argv) == 2 ):
+        testNoise()
+        mergeNoisySplices()
         createNewDICM()
+    elif(len(sys.argv) == 3 and type(sys.argv[1]) == str):
+        outputFile = sys.argv[2]
+        testNoise()
+        mergeNoisySplices()
+        createNewDICM(outputFile)
     else:
         outputFile = sys.argv[2]
+        threshold = int(sys.argv[3])
+        testNoise(threshold)
+        mergeNoisySplices()
         createNewDICM(outputFile)
